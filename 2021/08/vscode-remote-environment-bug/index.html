@@ -5,18 +5,18 @@
 <meta name=robots content="noodp">
 <meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
 <title>Vscode-ssh远程开发PATH环境变量不能自动刷新的bug - 豆浆的博客</title><meta name=Description content="豆浆的博客"><meta property="og:title" content="Vscode-ssh远程开发PATH环境变量不能自动刷新的bug">
-<meta property="og:description" content="在使用vscode远程连到Ubuntu上开发golang时偶然遇到了一个奇怪的问题, vscode提示找不到go的二进制文件, 然后列出了环境变">
+<meta property="og:description" content="在使用 vscode 远程连到 Ubuntu 上开发 golang 时偶然遇到了一个奇怪的问题, vscode 提示找不到 go 的二进制文件, 然后列出了环境变量, go 相关的环境变量不再里面 1 2 3 Failed to run &#34;go">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.lomot.cn/2021/08/vscode-remote-environment-bug/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-08-01T12:03:19+08:00">
-<meta property="article:modified_time" content="2021-08-02T11:08:48+08:00"><meta property="og:site_name" content="豆浆的博客">
+<meta property="article:modified_time" content="2022-02-03T15:56:17+08:00"><meta property="og:site_name" content="豆浆的博客">
 <meta name=twitter:card content="summary">
 <meta name=twitter:title content="Vscode-ssh远程开发PATH环境变量不能自动刷新的bug">
-<meta name=twitter:description content="在使用vscode远程连到Ubuntu上开发golang时偶然遇到了一个奇怪的问题, vscode提示找不到go的二进制文件, 然后列出了环境变">
+<meta name=twitter:description content="在使用 vscode 远程连到 Ubuntu 上开发 golang 时偶然遇到了一个奇怪的问题, vscode 提示找不到 go 的二进制文件, 然后列出了环境变量, go 相关的环境变量不再里面 1 2 3 Failed to run &#34;go">
 <meta name=application-name content="豆浆的博客">
 <meta name=apple-mobile-web-app-title content="豆浆的博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2021/08/vscode-remote-environment-bug/><link rel=prev href=https://blog.lomot.cn/2021/05/kubeedge%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%974/><link rel=next href=https://blog.lomot.cn/2021/11/deploy-drone-ci-gitea/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Vscode-ssh远程开发PATH环境变量不能自动刷新的bug","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2021\/08\/vscode-remote-environment-bug\/"},"genre":"posts","keywords":"vscode, golang, go","wordcount":551,"url":"https:\/\/blog.lomot.cn\/2021\/08\/vscode-remote-environment-bug\/","datePublished":"2021-08-01T12:03:19+08:00","dateModified":"2021-08-02T11:08:48+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2021/08/vscode-remote-environment-bug/><link rel=prev href=https://blog.lomot.cn/2021/05/read-source-code-of-kubeedge-4/><link rel=next href=https://blog.lomot.cn/2021/11/deploy-drone-ci-gitea/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Vscode-ssh远程开发PATH环境变量不能自动刷新的bug","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2021\/08\/vscode-remote-environment-bug\/"},"genre":"posts","keywords":"vscode, golang, go","wordcount":467,"url":"https:\/\/blog.lomot.cn\/2021\/08\/vscode-remote-environment-bug\/","datePublished":"2021-08-01T12:03:19+08:00","dateModified":"2022-02-03T15:56:17+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head>
 <body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
 <div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
 <div class=header-wrapper>
@@ -57,8 +57,8 @@
 <div class=toc-content id=toc-content-auto></div>
 </div><article class="page single"><h1 class="single-title animated flipInX">Vscode-ssh远程开发PATH环境变量不能自动刷新的bug</h1><div class=post-meta>
 <div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw"></i>lomot</a></span></div>
-<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-08-01>2021-08-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 551 字&nbsp;
-<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id=/2021/08/vscode-remote-environment-bug/ class=leancloud_visitors data-flag-title=Vscode-ssh远程开发PATH环境变量不能自动刷新的bug>
+<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-08-01>2021-08-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 467 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 1 分钟&nbsp;<span id=/2021/08/vscode-remote-environment-bug/ class=leancloud_visitors data-flag-title=Vscode-ssh远程开发PATH环境变量不能自动刷新的bug>
 <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
 </span>&nbsp;</div>
 </div><div class="details toc" id=toc-static kept>
@@ -71,7 +71,7 @@
 <li><a href=#参考>参考</a></li>
 </ul>
 </nav></div>
-</div><div class=content id=content><p>在使用vscode远程连到Ubuntu上开发golang时偶然遇到了一个奇怪的问题, vscode提示找不到go的二进制文件, 然后列出了环境变量, go相关的环境变量不再里面</p>
+</div><div class=content id=content><p>在使用 vscode 远程连到 Ubuntu 上开发 golang 时偶然遇到了一个奇怪的问题, vscode 提示找不到 go 的二进制文件, 然后列出了环境变量, go 相关的环境变量不再里面</p>
 <div class=highlight><div class=chroma>
 <table class=lntable><tr><td class=lntd>
 <pre tabindex=0 class=chroma><code><span class=lnt>1
@@ -95,10 +95,10 @@
 /home/lomot/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/bin:/home/lomot/.zinit/polaris/sbin:/home/lomot/.zinit/polaris/bin:/home/lomot/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/nodejs/bin:/opt/go/bin:/home/lomot/go/bin:/opt/nodejs/bin:/opt/go/bin:/home/lomot/go/bin
 </code></pre></td></tr></table>
 </div>
-</div><p>于是去网上查了一下, 好像跟关于<code>.zshrc</code>没有被加载有关, 但是奇怪的是我的<code>.zshrc</code>里面的部分环境变量是已近加载了的, 比如我的<code>/opt/nodejs/bin</code>是通过<code>.zshrc</code>加载的. 对比报错中的环境变量和vscode内置终端中输出的环境变量, 发现少了后面go相关的部分, 而且<code>/opt/nodejs/bin</code>还被加载了两遍.</p>
-<p>结论是远程vscode-server只会使用它启动时候的环境变量, 如果需要刷新环境变量需要重启vscode-server,</p>
-<p>可以在本地vscode上<code>ctrl+shift+p</code>, 执行<code>Remote-SSH: Kill VS Code Server..</code></p>
-<p>或者连上linux服务器执行</p>
+</div><p>于是去网上查了一下, 好像跟关于<code>.zshrc</code>没有被加载有关, 但是奇怪的是我的<code>.zshrc</code>里面的部分环境变量是已近加载了的, 比如我的<code>/opt/nodejs/bin</code>是通过<code>.zshrc</code>加载的. 对比报错中的环境变量和 vscode 内置终端中输出的环境变量, 发现少了后面 go 相关的部分, 而且<code>/opt/nodejs/bin</code>还被加载了两遍.</p>
+<p>结论是远程 vscode-server 只会使用它启动时候的环境变量, 如果需要刷新环境变量需要重启 vscode-server,</p>
+<p>可以在本地 vscode 上<code>ctrl+shift+p</code>, 执行<code>Remote-SSH: Kill VS Code Server..</code></p>
+<p>或者连上 linux 服务器执行</p>
 <div class=highlight><div class=chroma>
 <table class=lntable><tr><td class=lntd>
 <pre tabindex=0 class=chroma><code><span class=lnt>1
@@ -107,7 +107,7 @@
 <pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>ps -aux <span class=p>|</span> grep code
 </code></pre></td></tr></table>
 </div>
-</div><p>查看vscode服务端的进程然后杀掉, 再重新使用vscode远程连进来. 我在安装go之前就使用过vscode远程服务器, 断开连接后服务器上的code进程并不会退出, 这就导致了我修改的环境变量没有生效. 结果就是我杀掉了服务器上的code后问他就解决了.</p>
+</div><p>查看 vscode 服务端的进程然后杀掉, 再重新使用 vscode 远程连进来. 我在安装 go 之前就使用过 vscode 远程服务器, 断开连接后服务器上的 code 进程并不会退出, 这就导致了我修改的环境变量没有生效. 结果就是我杀掉了服务器上的 code 后问他就解决了.</p>
 <h2 id=参考>参考</h2>
 <p><a href=https://github.com/microsoft/vscode-remote-release/issues/1671 target=_blank rel="noopener noreffer">https://github.com/microsoft/vscode-remote-release/issues/1671</a>
 <a href=https://github.com/microsoft/vscode-remote-release/issues/83 target=_blank rel="noopener noreffer">https://github.com/microsoft/vscode-remote-release/issues/83</a></p>
@@ -115,8 +115,8 @@
 <div class=post-info>
 <div class=post-info-line>
 <div class=post-info-mod>
-<span>更新于 2021-08-02&nbsp;<a class=git-hash href=https://github.com/dillonzq/LoveIt/commit/b07dc26e09e52fbadbe8edab1db6f11ec74a6865 target=_blank title="commit by lomot(lomot@qq.com) b07dc26e09e52fbadbe8edab1db6f11ec74a6865: update post">
-<i class="fas fa-hashtag fa-fw"></i>b07dc26</a></span>
+<span>更新于 2022-02-03&nbsp;<a class=git-hash href=https://github.com/dillonzq/LoveIt/commit/d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5 target=_blank title="commit by lomot(lomot@qq.com) d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5: use slug; rename all post url">
+<i class="fas fa-hashtag fa-fw"></i>d1bbeae</a></span>
 </div>
 <div class=post-info-license></div>
 </div>
@@ -133,7 +133,7 @@
 <span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
 </section>
 </div>
-<div class=post-nav><a href=/2021/05/kubeedge%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%974/ class=prev rel=prev title=Kubeedge源码阅读系列--edgecore.edgehub模块><i class="fas fa-angle-left fa-fw"></i>Kubeedge源码阅读系列--edgecore.edgehub模块</a>
+<div class=post-nav><a href=/2021/05/read-source-code-of-kubeedge-4/ class=prev rel=prev title=Kubeedge源码阅读系列--edgecore.edgehub模块><i class="fas fa-angle-left fa-fw"></i>Kubeedge源码阅读系列--edgecore.edgehub模块</a>
 <a href=/2021/11/deploy-drone-ci-gitea/ class=next rel=next title="让 Gitea 支持 Drone 持续集成工具">让 Gitea 支持 Drone 持续集成工具<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id=comments><div id=valine class=comment></div><noscript>

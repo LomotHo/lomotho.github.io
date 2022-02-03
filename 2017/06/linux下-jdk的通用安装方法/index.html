@@ -4,19 +4,19 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="noodp">
 <meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
-<title>GPG使用笔记 - 豆浆的博客</title><meta name=Description content="豆浆的博客"><meta property="og:title" content="GPG使用笔记">
-<meta property="og:description" content="部分常用指令 生成新密钥: gpg --full-gen-key 编辑模式 gpg --edit-key lomot 高级编辑模式 gpg --expert --edit-key lomot 显示keygrip gpg --list-keys --with-keygrip 设置gpg根目录 export GNUPGHOME=/Volumes/LOMOT-KEY/gpg/.gnupg 导入导出相关命令 导入公钥 gpg --import /Volumes/LOMOT-KEY/gpg/dist/pub.txt 导入">
+<title>linux下 jdk的通用安装方法 - 豆浆的博客</title><meta name=Description content="豆浆的博客"><meta property="og:title" content="linux下 jdk的通用安装方法">
+<meta property="og:description" content="此方法适用于大部分发行版, x86 arm 1 卸载openjdk 2 下载orical jdk, 有桌面直接去http://www.oracle.com/technet">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2019-06-15T22:21:01+08:00">
-<meta property="article:modified_time" content="2019-06-15T22:21:01+08:00"><meta property="og:site_name" content="豆浆的博客">
+<meta property="og:url" content="https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2017-06-10T08:00:00+08:00">
+<meta property="article:modified_time" content="2017-06-10T08:00:00+08:00"><meta property="og:site_name" content="豆浆的博客">
 <meta name=twitter:card content="summary">
-<meta name=twitter:title content="GPG使用笔记">
-<meta name=twitter:description content="部分常用指令 生成新密钥: gpg --full-gen-key 编辑模式 gpg --edit-key lomot 高级编辑模式 gpg --expert --edit-key lomot 显示keygrip gpg --list-keys --with-keygrip 设置gpg根目录 export GNUPGHOME=/Volumes/LOMOT-KEY/gpg/.gnupg 导入导出相关命令 导入公钥 gpg --import /Volumes/LOMOT-KEY/gpg/dist/pub.txt 导入">
+<meta name=twitter:title content="linux下 jdk的通用安装方法">
+<meta name=twitter:description content="此方法适用于大部分发行版, x86 arm 1 卸载openjdk 2 下载orical jdk, 有桌面直接去http://www.oracle.com/technet">
 <meta name=application-name content="豆浆的博客">
 <meta name=apple-mobile-web-app-title content="豆浆的博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/><link rel=prev href=https://blog.lomot.cn/2019/04/blog%E4%BD%BF%E7%94%A8valine%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/><link rel=next href=https://blog.lomot.cn/2019/06/soloblog%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"GPG使用笔记","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2019\/06\/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0\/"},"genre":"posts","keywords":"GPG, linux, 安全","wordcount":189,"url":"https:\/\/blog.lomot.cn\/2019\/06\/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0\/","datePublished":"2019-06-15T22:21:01+08:00","dateModified":"2019-06-15T22:21:01+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/><link rel=prev href=https://blog.lomot.cn/2017/04/ubuntu17.04%E6%B2%A1%E6%9C%89rc.local/><link rel=next href=https://blog.lomot.cn/2017/07/%E6%9B%B4%E6%8D%A2ssl%E8%AF%81%E4%B9%A6%E4%B8%BAlets-encrypt%E5%B9%B6%E4%BD%BF%E7%94%A8acme.sh%E5%AE%9A%E6%9C%9F%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0ssl%E8%AF%81%E4%B9%A6/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"linux下 jdk的通用安装方法","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2017\/06\/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95\/"},"genre":"posts","keywords":"Java, Linux","wordcount":258,"url":"https:\/\/blog.lomot.cn\/2017\/06\/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95\/","datePublished":"2017-06-10T08:00:00+08:00","dateModified":"2017-06-10T08:00:00+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head>
 <body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
 <div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
 <div class=header-wrapper>
@@ -55,10 +55,10 @@
 <div class=container><div class=toc id=toc-auto>
 <h2 class=toc-title>目录</h2>
 <div class=toc-content id=toc-content-auto></div>
-</div><article class="page single"><h1 class="single-title animated flipInX">GPG使用笔记</h1><div class=post-meta>
+</div><article class="page single"><h1 class="single-title animated flipInX">linux下 jdk的通用安装方法</h1><div class=post-meta>
 <div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw"></i>lomot</a></span></div>
-<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2019-06-15>2019-06-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 189 字&nbsp;
-<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 1 分钟&nbsp;<span id=/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/ class=leancloud_visitors data-flag-title=GPG使用笔记>
+<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2017-06-10>2017-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 258 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 1 分钟&nbsp;<span id=/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/ class=leancloud_visitors data-flag-title="linux下 jdk的通用安装方法">
 <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
 </span>&nbsp;</div>
 </div><div class="details toc" id=toc-static kept>
@@ -66,78 +66,106 @@
 <span>目录</span>
 <span><i class="details-icon fas fa-angle-right"></i></span>
 </div>
-<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
-<ul>
-<li><a href=#部分常用指令>部分常用指令</a></li>
-<li><a href=#导入导出相关命令>导入导出相关命令</a></li>
-<li><a href=#删除>删除</a></li>
-<li><a href=#编辑模式>编辑模式</a>
-<ul>
-<li><a href=#参考--httpsemacsistgithubio20190101gnupg2e4bdbfe794a8e68c87e58c97httpsemacsistgithubio20190101gnupg2e4bdbfe794a8e68c87e58c97>参考： <a href=https://emacsist.github.io/2019/01/01/gnupg2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/>https://emacsist.github.io/2019/01/01/gnupg2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/</a></a></li>
-</ul>
-</li>
-</ul>
-</nav></div>
-</div><div class=content id=content><h2 id=部分常用指令>部分常用指令</h2>
-<p>生成新密钥:
-<code>gpg --full-gen-key</code></p>
-<p>编辑模式
-<code>gpg --edit-key lomot</code></p>
-<p>高级编辑模式
-<code>gpg --expert --edit-key lomot</code></p>
-<p>显示keygrip
-<code>gpg --list-keys --with-keygrip</code></p>
-<p>设置gpg根目录
-<code>export GNUPGHOME=/Volumes/LOMOT-KEY/gpg/.gnupg</code></p>
-<h2 id=导入导出相关命令>导入导出相关命令</h2>
-<p>导入公钥
-<code>gpg --import /Volumes/LOMOT-KEY/gpg/dist/pub.txt</code></p>
-<p>导入子密钥
-<code>gpg --import /Volumes/LOMOT-KEY/gpg/dist/subkeys.txt</code></p>
-<p>导出所有密钥
-<code>gpg -a --export-secret-keys lomot > ~/Downloads/key/keys.key</code></p>
-<p>导出所有子密钥
-<code>gpg -a --export-secret-subkeys lomot > ~/Downloads/key/subkeys.key</code></p>
-<p>导出公钥
-<code>gpg -a --export lomot > ~/Downloads/key/gpg.pub</code></p>
-<h2 id=删除>删除</h2>
-<p>删除公钥
-<code>gpg --delete-key UID</code></p>
-<p>删除密钥
-<code>gpg --delete-secret-key</code></p>
-<h2 id=编辑模式>编辑模式</h2>
-<p><code>help</code> :帮助</p>
-<p><code>addkey</code> :添加子密钥</p>
-<p><code>revkey</code> :吊销密钥</p>
-<p><code>delkey</code> :删除子密钥</p>
-<p><code>passwd</code> : 修改保护私钥的密码</p>
-<p><code>clean</code> : 清除过期或无效的</p>
-<p><code>expire</code> : 设置过期</p>
-<p><code>revoke</code> : 回收</p>
-<h3 id=参考--httpsemacsistgithubio20190101gnupg2e4bdbfe794a8e68c87e58c97httpsemacsistgithubio20190101gnupg2e4bdbfe794a8e68c87e58c97>参考： <a href=https://emacsist.github.io/2019/01/01/gnupg2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/ target=_blank rel="noopener noreffer">https://emacsist.github.io/2019/01/01/gnupg2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/</a></h3>
-</div><div class=post-footer id=post-footer>
+<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents></nav></div>
+</div><div class=content id=content><p>此方法适用于大部分发行版, x86 arm</p>
+<hr>
+<p>1 卸载openjdk
+2 下载orical jdk, 有桌面直接去http://www.oracle.com/technetwork/java/javase/downloads/index.html 下载, 没有桌面环境或处于服务器命令行环境, 先在win下用迅雷获取链接然后使用下面的命令</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ wget --no-check-certificate --no-cookies --header &#34;Cookie: oraclelicense=accept-securebackup-cookie&#34; http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>3 解压</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ tar -zxvf jdk-7u79-linux-x64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>4 移到/opt目录</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ sudo mv jdk1.7.0_79 /opt
+</code></pre></td></tr></table>
+</div>
+</div><p>jdk1.7.0_79为解压出来的目录</p>
+<p>5 编辑profile</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ sudo vim /etc/profile
+</code></pre></td></tr></table>
+</div>
+</div><p>6 在最后加入</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>JAVA_HOME=/opt/jdk1.7.0_79
+JRE_HOME=/opt/jdk1.7.0_79/jre
+CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
+export JAVA_HOME JRE_HOME CLASS_PATH PATH
+</code></pre></td></tr></table>
+</div>
+</div><p>7 使其生效</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ source /etc/profile
+</code></pre></td></tr></table>
+</div>
+</div><p>或者重新登录</p>
+<p>8 测试</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>$ java --version
+</code></pre></td></tr></table>
+</div>
+</div></div><div class=post-footer id=post-footer>
 <div class=post-info>
 <div class=post-info-line>
 <div class=post-info-mod>
-<span>更新于 2019-06-15</span>
+<span>更新于 2017-06-10</span>
 </div>
 <div class=post-info-license></div>
 </div>
 <div class=post-info-line>
 <div class=post-info-md></div>
 <div class=post-info-share>
-<span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/ data-title=GPG使用笔记 data-via=lomotco data-hashtags=GPG,linux,安全><i class="fab fa-twitter fa-fw"></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/ data-hashtag=GPG><i class="fab fa-facebook-square fa-fw"></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/ data-title=GPG使用笔记 data-ralateuid=5676214854><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 人人" data-sharer=renren data-url=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/><i class="fab fa-renren fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://blog.lomot.cn/2019/06/gpg%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/ data-title=GPG使用笔记><i class="fab fa-evernote fa-fw"></i></a></span>
+<span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/ data-title="linux下 jdk的通用安装方法" data-via=lomotco data-hashtags=Java,Linux><i class="fab fa-twitter fa-fw"></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/ data-hashtag=Java><i class="fab fa-facebook-square fa-fw"></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/ data-title="linux下 jdk的通用安装方法" data-ralateuid=5676214854><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 人人" data-sharer=renren data-url=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/><i class="fab fa-renren fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://blog.lomot.cn/2017/06/linux%E4%B8%8B-jdk%E7%9A%84%E9%80%9A%E7%94%A8%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/ data-title="linux下 jdk的通用安装方法"><i class="fab fa-evernote fa-fw"></i></a></span>
 </div>
 </div>
 </div>
 <div class=post-info-more>
-<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/gpg/>GPG</a>,&nbsp;<a href=/tags/linux/>linux</a>,&nbsp;<a href=/tags/%E5%AE%89%E5%85%A8/>安全</a></section>
+<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/java/>Java</a>,&nbsp;<a href=/tags/linux/>linux</a></section>
 <section>
 <span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
 </section>
 </div>
-<div class=post-nav><a href=/2019/04/blog%E4%BD%BF%E7%94%A8valine%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/ class=prev rel=prev title=blog使用Valine评论系统><i class="fas fa-angle-left fa-fw"></i>blog使用Valine评论系统</a>
-<a href=/2019/06/soloblog%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95/ class=next rel=next title="Solo blog 配置记录">Solo blog 配置记录<i class="fas fa-angle-right fa-fw"></i></a></div>
+<div class=post-nav><a href=/2017/04/ubuntu17.04%E6%B2%A1%E6%9C%89rc.local/ class=prev rel=prev title=Ubuntu17.04没有rc.local><i class="fas fa-angle-left fa-fw"></i>Ubuntu17.04没有rc.local</a>
+<a href=/2017/07/%E6%9B%B4%E6%8D%A2ssl%E8%AF%81%E4%B9%A6%E4%B8%BAlets-encrypt%E5%B9%B6%E4%BD%BF%E7%94%A8acme.sh%E5%AE%9A%E6%9C%9F%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0ssl%E8%AF%81%E4%B9%A6/ class=next rel=next title="更换ssl证书为let‘s encrypt，并使用acme.sh定期自动更新ssl证书">更换ssl证书为let‘s encrypt，并使用acme.sh定期自动更新ssl证书<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id=comments><div id=valine class=comment></div><noscript>
 Please enable JavaScript to view the comments powered by <a href=https://valine.js.org/>Valine</a>.
