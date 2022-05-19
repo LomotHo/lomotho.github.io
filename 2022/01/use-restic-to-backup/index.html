@@ -1,93 +1,12 @@
-<!doctype html><html lang=zh-cn>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=robots content="noodp">
-<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
-<title>使用 Restic 备份服务器数据 - 豆浆的博客</title><meta name=Description content="豆浆的博客"><meta property="og:title" content="使用 Restic 备份服务器数据">
-<meta property="og:description" content="安装rest-server后端 我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为ubuntu20.04 1 sudo vim /etc/systemd/system/rest-server.service 1 2 3 4 5 6 7">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://blog.lomot.cn/2022/01/use-restic-to-backup/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2022-01-15T11:36:16+08:00">
-<meta property="article:modified_time" content="2022-02-03T15:56:17+08:00"><meta property="og:site_name" content="豆浆的博客">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="使用 Restic 备份服务器数据">
-<meta name=twitter:description content="安装rest-server后端 我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为ubuntu20.04 1 sudo vim /etc/systemd/system/rest-server.service 1 2 3 4 5 6 7">
-<meta name=application-name content="豆浆的博客">
-<meta name=apple-mobile-web-app-title content="豆浆的博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2022/01/use-restic-to-backup/><link rel=prev href=https://blog.lomot.cn/2021/11/deploy-drone-ci-gitea/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"使用 Restic 备份服务器数据","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2022\/01\/use-restic-to-backup\/"},"genre":"posts","keywords":"Restic, 运维","wordcount":1055,"url":"https:\/\/blog.lomot.cn\/2022\/01\/use-restic-to-backup\/","datePublished":"2022-01-15T11:36:16+08:00","dateModified":"2022-02-03T15:56:17+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head>
-<body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
-<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=豆浆的博客>豆浆的博客</a>
-</div>
-<div class=menu>
-<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/> 关于 </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a>
-</div>
-</div>
-</div>
-</header><header class=mobile id=header-mobile>
-<div class=header-container>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=豆浆的博客>豆浆的博客</a>
-</div>
-<div class=menu-toggle id=menu-toggle-mobile>
-<span></span><span></span><span></span>
-</div>
-</div>
-<div class=menu id=menu-mobile><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a></div>
-</div>
-</header>
-<div class="search-dropdown desktop">
-<div id=search-dropdown-desktop></div>
-</div>
-<div class="search-dropdown mobile">
-<div id=search-dropdown-mobile></div>
-</div>
-<main class=main>
-<div class=container><div class=toc id=toc-auto>
-<h2 class=toc-title>目录</h2>
-<div class=toc-content id=toc-content-auto></div>
-</div><article class="page single"><h1 class="single-title animated flipInX">使用 Restic 备份服务器数据</h1><div class=post-meta>
-<div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw"></i>lomot</a></span></div>
-<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-01-15>2022-01-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1055 字&nbsp;
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>使用 Restic 备份服务器数据 - 豆浆的博客</title><meta name=Description content="豆浆的博客"><meta property="og:title" content="使用 Restic 备份服务器数据"><meta property="og:description" content="安装rest-server后端 我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为ubuntu20.04 1 sudo vim /etc/systemd/system/rest-server.service 1 2 3 4 5 6 7"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.lomot.cn/2022/01/use-restic-to-backup/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-01-15T11:36:16+08:00"><meta property="article:modified_time" content="2022-02-03T15:56:17+08:00"><meta property="og:site_name" content="豆浆的博客"><meta name=twitter:card content="summary"><meta name=twitter:title content="使用 Restic 备份服务器数据"><meta name=twitter:description content="安装rest-server后端 我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为ubuntu20.04 1 sudo vim /etc/systemd/system/rest-server.service 1 2 3 4 5 6 7"><meta name=application-name content="豆浆的博客"><meta name=apple-mobile-web-app-title content="豆浆的博客"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.lomot.cn/2022/01/use-restic-to-backup/><link rel=prev href=https://blog.lomot.cn/2021/11/deploy-drone-ci-gitea/><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/@fortawesome/fontawesome-free@5.13.0/css/all.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/animate.css@3.7.2/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"使用 Restic 备份服务器数据","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.lomot.cn\/2022\/01\/use-restic-to-backup\/"},"genre":"posts","keywords":"Restic, 运维","wordcount":1055,"url":"https:\/\/blog.lomot.cn\/2022\/01\/use-restic-to-backup\/","datePublished":"2022-01-15T11:36:16+08:00","dateModified":"2022-02-03T15:56:17+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"lomot"},"author":{"@type":"Person","name":"lomot"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=豆浆的博客>豆浆的博客</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=豆浆的博客>豆浆的博客</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">使用 Restic 备份服务器数据</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw"></i>lomot</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-01-15>2022-01-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1055 字&nbsp;
 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id=/2022/01/use-restic-to-backup/ class=leancloud_visitors data-flag-title="使用 Restic 备份服务器数据">
 <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
-</span>&nbsp;</div>
-</div><div class="details toc" id=toc-static kept>
-<div class="details-summary toc-title">
-<span>目录</span>
-<span><i class="details-icon fas fa-angle-right"></i></span>
-</div>
-<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
-<ul>
-<li><a href=#安装rest-server后端>安装<code>rest-server</code>后端</a></li>
-<li><a href=#开始备份>开始备份</a></li>
-<li><a href=#免密码备份>免密码备份</a></li>
-<li><a href=#删除策略>删除策略</a></li>
-<li><a href=#定时备份-gitea-的脚本>定时备份 gitea 的脚本</a></li>
-</ul>
-</nav></div>
-</div><div class=content id=content><h2 id=安装rest-server后端>安装<code>rest-server</code>后端</h2>
-<p>我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为<code>ubuntu20.04</code></p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo vim /etc/systemd/system/rest-server.service
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span>&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#安装rest-server后端>安装<code>rest-server</code>后端</a></li><li><a href=#开始备份>开始备份</a></li><li><a href=#免密码备份>免密码备份</a></li><li><a href=#删除策略>删除策略</a></li><li><a href=#定时备份-gitea-的脚本>定时备份 gitea 的脚本</a></li></ul></nav></div></div><div class=content id=content><h2 id=安装rest-server后端>安装<code>rest-server</code>后端</h2><p>我准备把后端放到 nas 上, 由于不想在 nas 上装 docker, 所以使用 systemd 管理进程, 系统为<code>ubuntu20.04</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo vim /etc/systemd/system/rest-server.service
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -161,154 +80,107 @@
 </span><span class=lnt>72
 </span><span class=lnt>73
 </span><span class=lnt>74
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=k>[Unit]</span>
-<span class=na>Description</span><span class=o>=</span><span class=s>Rest Server</span>
-<span class=na>After</span><span class=o>=</span><span class=s>syslog.target</span>
-<span class=na>After</span><span class=o>=</span><span class=s>network.target</span>
-
-<span class=c1># if you want to use socket activation, make sure to require the socket here</span>
-<span class=c1>#Requires=rest-server.socket</span>
-
-<span class=k>[Service]</span>
-<span class=na>Type</span><span class=o>=</span><span class=s>simple</span>
-<span class=c1># You may prefer to use a different user or group on your system.</span>
-<span class=na>User</span><span class=o>=</span><span class=s>lomot</span>
-<span class=na>Group</span><span class=o>=</span><span class=s>lomot</span>
-<span class=na>ExecStart</span><span class=o>=</span><span class=s>/opt/rest-server/rest-server --path /nas/backup/restic --listen 0.0.0.0:8022 --no-auth</span>
-<span class=na>Restart</span><span class=o>=</span><span class=s>always</span>
-<span class=na>RestartSec</span><span class=o>=</span><span class=s>5</span>
-
-<span class=c1># The following options are available (in systemd v247) to restrict the</span>
-<span class=c1># actions of the rest-server.</span>
-
-<span class=c1># As a whole, the purpose of these are to provide an additional layer of</span>
-<span class=c1># security by mitigating any unknown security vulnerabilities which may exist</span>
-<span class=c1># in rest-server or in the libraries, tools and operating system components</span>
-<span class=c1># which it relies upon.</span>
-
-<span class=c1># IMPORTANT!</span>
-<span class=c1># The following line must be customised to your individual requirements.</span>
-<span class=na>ReadWritePaths</span><span class=o>=</span><span class=s>/nas/backup/restic</span>
-
-<span class=c1># Makes created files group-readable, but inaccessible by others</span>
-<span class=na>UMask</span><span class=o>=</span><span class=s>027</span>
-
-<span class=c1># If your system doesn&#39;t support all of the features below (e.g. because of</span>
-<span class=c1># the use of an older version of systemd), you may wish to comment-out</span>
-<span class=c1># some of the lines below as appropriate.</span>
-<span class=na>CapabilityBoundingSet</span><span class=o>=</span>
-<span class=na>LockPersonality</span><span class=o>=</span><span class=s>true</span>
-<span class=na>MemoryDenyWriteExecute</span><span class=o>=</span><span class=s>true</span>
-<span class=na>NoNewPrivileges</span><span class=o>=</span><span class=s>yes</span>
-<span class=na>PrivateTmp</span><span class=o>=</span><span class=s>yes</span>
-<span class=na>PrivateDevices</span><span class=o>=</span><span class=s>true</span>
-<span class=na>PrivateUsers</span><span class=o>=</span><span class=s>true</span>
-<span class=na>ProtectSystem</span><span class=o>=</span><span class=s>strict</span>
-<span class=na>ProtectHome</span><span class=o>=</span><span class=s>yes</span>
-<span class=na>ProtectClock</span><span class=o>=</span><span class=s>true</span>
-<span class=na>ProtectControlGroups</span><span class=o>=</span><span class=s>true</span>
-<span class=na>ProtectKernelLogs</span><span class=o>=</span><span class=s>true</span>
-<span class=na>ProtectKernelModules</span><span class=o>=</span><span class=s>true</span>
-<span class=na>ProtectKernelTunables</span><span class=o>=</span><span class=s>true</span>
-<span class=c1># ProtectProc=invisible</span>
-<span class=na>ProtectHostname</span><span class=o>=</span><span class=s>true</span>
-<span class=na>RemoveIPC</span><span class=o>=</span><span class=s>true</span>
-<span class=na>RestrictNamespaces</span><span class=o>=</span><span class=s>true</span>
-<span class=na>RestrictAddressFamilies</span><span class=o>=</span><span class=s>AF_INET AF_INET6</span>
-<span class=na>RestrictSUIDSGID</span><span class=o>=</span><span class=s>true</span>
-<span class=na>RestrictRealtime</span><span class=o>=</span><span class=s>true</span>
-<span class=na>SystemCallArchitectures</span><span class=o>=</span><span class=s>native</span>
-<span class=na>SystemCallFilter</span><span class=o>=</span><span class=s>@system-service</span>
-<span class=c1># Additionally, you may wish to use some of the systemd options documented in</span>
-<span class=c1># systemd.resource-control(5) to limit the CPU, memory, file-system I/O and</span>
-<span class=c1># network I/O that the rest-server is permitted to consume according to the</span>
-<span class=c1># individual requirements of your installation.</span>
-<span class=c1>#CPUQuota=25%</span>
-<span class=c1>#MemoryMax=bytes</span>
-<span class=c1>#MemorySwapMax=bytes</span>
-<span class=c1>#TasksMax=N</span>
-<span class=c1>#IOReadBandwidthMax=device bytes</span>
-<span class=c1>#IOWriteBandwidthMax=device bytes</span>
-<span class=c1>#IOReadIOPSMax=device IOPS, IOWriteIOPSMax=device IOPS</span>
-<span class=c1>#IPAccounting=true</span>
-<span class=c1>#IPAddressAllow=</span>
-
-<span class=k>[Install]</span>
-<span class=na>WantedBy</span><span class=o>=</span><span class=s>multi-user.target</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>其中<code>--path /nas/backup/restic</code>为备份存储路径, 注意<code>ReadWritePaths=/nas/backup/restic</code>字段一定要加上, 不然会没有文件写入权限</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=k>[Unit]</span>
+</span></span><span class=line><span class=cl><span class=na>Description</span><span class=o>=</span><span class=s>Rest Server</span>
+</span></span><span class=line><span class=cl><span class=na>After</span><span class=o>=</span><span class=s>syslog.target</span>
+</span></span><span class=line><span class=cl><span class=na>After</span><span class=o>=</span><span class=s>network.target</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># if you want to use socket activation, make sure to require the socket here</span>
+</span></span><span class=line><span class=cl><span class=c1>#Requires=rest-server.socket</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>[Service]</span>
+</span></span><span class=line><span class=cl><span class=na>Type</span><span class=o>=</span><span class=s>simple</span>
+</span></span><span class=line><span class=cl><span class=c1># You may prefer to use a different user or group on your system.</span>
+</span></span><span class=line><span class=cl><span class=na>User</span><span class=o>=</span><span class=s>lomot</span>
+</span></span><span class=line><span class=cl><span class=na>Group</span><span class=o>=</span><span class=s>lomot</span>
+</span></span><span class=line><span class=cl><span class=na>ExecStart</span><span class=o>=</span><span class=s>/opt/rest-server/rest-server --path /nas/backup/restic --listen 0.0.0.0:8022 --no-auth</span>
+</span></span><span class=line><span class=cl><span class=na>Restart</span><span class=o>=</span><span class=s>always</span>
+</span></span><span class=line><span class=cl><span class=na>RestartSec</span><span class=o>=</span><span class=s>5</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># The following options are available (in systemd v247) to restrict the</span>
+</span></span><span class=line><span class=cl><span class=c1># actions of the rest-server.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># As a whole, the purpose of these are to provide an additional layer of</span>
+</span></span><span class=line><span class=cl><span class=c1># security by mitigating any unknown security vulnerabilities which may exist</span>
+</span></span><span class=line><span class=cl><span class=c1># in rest-server or in the libraries, tools and operating system components</span>
+</span></span><span class=line><span class=cl><span class=c1># which it relies upon.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># IMPORTANT!</span>
+</span></span><span class=line><span class=cl><span class=c1># The following line must be customised to your individual requirements.</span>
+</span></span><span class=line><span class=cl><span class=na>ReadWritePaths</span><span class=o>=</span><span class=s>/nas/backup/restic</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Makes created files group-readable, but inaccessible by others</span>
+</span></span><span class=line><span class=cl><span class=na>UMask</span><span class=o>=</span><span class=s>027</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># If your system doesn&#39;t support all of the features below (e.g. because of</span>
+</span></span><span class=line><span class=cl><span class=c1># the use of an older version of systemd), you may wish to comment-out</span>
+</span></span><span class=line><span class=cl><span class=c1># some of the lines below as appropriate.</span>
+</span></span><span class=line><span class=cl><span class=na>CapabilityBoundingSet</span><span class=o>=</span>
+</span></span><span class=line><span class=cl><span class=na>LockPersonality</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>MemoryDenyWriteExecute</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>NoNewPrivileges</span><span class=o>=</span><span class=s>yes</span>
+</span></span><span class=line><span class=cl><span class=na>PrivateTmp</span><span class=o>=</span><span class=s>yes</span>
+</span></span><span class=line><span class=cl><span class=na>PrivateDevices</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>PrivateUsers</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectSystem</span><span class=o>=</span><span class=s>strict</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectHome</span><span class=o>=</span><span class=s>yes</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectClock</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectControlGroups</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectKernelLogs</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectKernelModules</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectKernelTunables</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=c1># ProtectProc=invisible</span>
+</span></span><span class=line><span class=cl><span class=na>ProtectHostname</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>RemoveIPC</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>RestrictNamespaces</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>RestrictAddressFamilies</span><span class=o>=</span><span class=s>AF_INET AF_INET6</span>
+</span></span><span class=line><span class=cl><span class=na>RestrictSUIDSGID</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>RestrictRealtime</span><span class=o>=</span><span class=s>true</span>
+</span></span><span class=line><span class=cl><span class=na>SystemCallArchitectures</span><span class=o>=</span><span class=s>native</span>
+</span></span><span class=line><span class=cl><span class=na>SystemCallFilter</span><span class=o>=</span><span class=s>@system-service</span>
+</span></span><span class=line><span class=cl><span class=c1># Additionally, you may wish to use some of the systemd options documented in</span>
+</span></span><span class=line><span class=cl><span class=c1># systemd.resource-control(5) to limit the CPU, memory, file-system I/O and</span>
+</span></span><span class=line><span class=cl><span class=c1># network I/O that the rest-server is permitted to consume according to the</span>
+</span></span><span class=line><span class=cl><span class=c1># individual requirements of your installation.</span>
+</span></span><span class=line><span class=cl><span class=c1>#CPUQuota=25%</span>
+</span></span><span class=line><span class=cl><span class=c1>#MemoryMax=bytes</span>
+</span></span><span class=line><span class=cl><span class=c1>#MemorySwapMax=bytes</span>
+</span></span><span class=line><span class=cl><span class=c1>#TasksMax=N</span>
+</span></span><span class=line><span class=cl><span class=c1>#IOReadBandwidthMax=device bytes</span>
+</span></span><span class=line><span class=cl><span class=c1>#IOWriteBandwidthMax=device bytes</span>
+</span></span><span class=line><span class=cl><span class=c1>#IOReadIOPSMax=device IOPS, IOWriteIOPSMax=device IOPS</span>
+</span></span><span class=line><span class=cl><span class=c1>#IPAccounting=true</span>
+</span></span><span class=line><span class=cl><span class=c1>#IPAddressAllow=</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>[Install]</span>
+</span></span><span class=line><span class=cl><span class=na>WantedBy</span><span class=o>=</span><span class=s>multi-user.target</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中<code>--path /nas/backup/restic</code>为备份存储路径, 注意<code>ReadWritePaths=/nas/backup/restic</code>字段一定要加上, 不然会没有文件写入权限</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo systemctl daemon-reload
-sudo systemctl start rest-server.service
-sudo systemctl <span class=nb>enable</span> rest-server.service
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=开始备份>开始备份</h2>
-<ul>
-<li>在需要备份的机器上安装 restic</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo apt install restic
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>初始化备份仓库</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test init
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>sudo systemctl start rest-server.service
+</span></span><span class=line><span class=cl>sudo systemctl <span class=nb>enable</span> rest-server.service
+</span></span></code></pre></td></tr></table></div></div><h2 id=开始备份>开始备份</h2><ul><li>在需要备份的机器上安装 restic</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo apt install restic
+</span></span></code></pre></td></tr></table></div></div><ul><li>初始化备份仓库</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test init
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span><span class=lnt>6
 </span><span class=lnt>7
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for new repository:
-enter password again:
-created restic repository b4e2dff5d6 at rest:http://192.168.8.250:8022/test
-
-Please note that knowledge of your password is required to access
-the repository. Losing your password means that your data is
-irrecoverably lost.
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>备份数据</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test backup important-data/
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for new repository:
+</span></span><span class=line><span class=cl>enter password again:
+</span></span><span class=line><span class=cl>created restic repository b4e2dff5d6 at rest:http://192.168.8.250:8022/test
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Please note that knowledge of your password is required to access
+</span></span><span class=line><span class=cl>the repository. Losing your password means that your data is
+</span></span><span class=line><span class=cl>irrecoverably lost.
+</span></span></code></pre></td></tr></table></div></div><ul><li>备份数据</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test backup important-data/
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -318,34 +190,19 @@ irrecoverably lost.
 </span><span class=lnt> 8
 </span><span class=lnt> 9
 </span><span class=lnt>10
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for repository:
-repository b4e2dff5 opened successfully, password is correct
-created new cache in /home/lomot/.cache/restic
-
-Files:           1 new,     0 changed,     0 unmodified
-Dirs:            0 new,     0 changed,     0 unmodified
-Added to the repo: 444 B
-
-processed 1 files, 60 B in 0:00
-snapshot 00e81d67 saved
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>查看备份快照</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test snapshots
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for repository:
+</span></span><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>created new cache in /home/lomot/.cache/restic
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Files:           1 new,     0 changed,     0 unmodified
+</span></span><span class=line><span class=cl>Dirs:            0 new,     0 changed,     0 unmodified
+</span></span><span class=line><span class=cl>Added to the repo: 444 B
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>processed 1 files, 60 B in 0:00
+</span></span><span class=line><span class=cl>snapshot 00e81d67 saved
+</span></span></code></pre></td></tr></table></div></div><ul><li>查看备份快照</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test snapshots
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
@@ -353,117 +210,51 @@ snapshot 00e81d67 saved
 </span><span class=lnt>6
 </span><span class=lnt>7
 </span><span class=lnt>8
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for repository:
-repository b4e2dff5 opened successfully, password is correct
-ID        Time                 Host           Tags        Paths
-------------------------------------------------------------------------------------
-00e81d67  2022-01-15 11:50:05  lomot-service              /home/lomot/important-data
-bef1d9e5  2022-01-15 11:52:13  lomot-service              /home/lomot/important-data
-------------------------------------------------------------------------------------
-2 snapshots
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>恢复数据</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test restore bef1d9e5 --target ./tmp
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for repository:
+</span></span><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>ID        Time                 Host           Tags        Paths
+</span></span><span class=line><span class=cl>------------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl>00e81d67  2022-01-15 11:50:05  lomot-service              /home/lomot/important-data
+</span></span><span class=line><span class=cl>bef1d9e5  2022-01-15 11:52:13  lomot-service              /home/lomot/important-data
+</span></span><span class=line><span class=cl>------------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl>2 snapshots
+</span></span></code></pre></td></tr></table></div></div><ul><li>恢复数据</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test restore bef1d9e5 --target ./tmp
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for repository:
-repository b4e2dff5 opened successfully, password is correct
-restoring &lt;Snapshot 00e81d67 of [/home/lomot/important-data] at 2022-01-15 11:50:05.621230745 +0800 CST by lomot@lomot-service&gt; to ./tmp
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>删除备份快照</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test forget 00e81d67
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for repository:
+</span></span><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>restoring &lt;Snapshot 00e81d67 of [/home/lomot/important-data] at 2022-01-15 11:50:05.621230745 +0800 CST by lomot@lomot-service&gt; to ./tmp
+</span></span></code></pre></td></tr></table></div></div><ul><li>删除备份快照</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test forget 00e81d67
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for repository:
-repository b4e2dff5 opened successfully, password is correct
-removed snapshot 00e81d67
-</code></pre></td></tr></table>
-</div>
-</div><p>看一下删掉后得结果</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test snapshots
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for repository:
+</span></span><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>removed snapshot 00e81d67
+</span></span></code></pre></td></tr></table></div></div><p>看一下删掉后得结果</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test snapshots
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span><span class=lnt>6
 </span><span class=lnt>7
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>enter password for repository:
-repository b4e2dff5 opened successfully, password is correct
-ID        Time                 Host           Tags        Paths
-------------------------------------------------------------------------------------
-bef1d9e5  2022-01-15 11:52:13  lomot-service              /home/lomot/important-data
-------------------------------------------------------------------------------------
-1 snapshots
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=免密码备份>免密码备份</h2>
-<ul>
-<li>创建密码文件</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>echo</span> <span class=s1>&#39;123456&#39;</span> &gt; /home/lomot/.restic_passwd
-</code></pre></td></tr></table>
-</div>
-</div><p>备份</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test backup important-data/ --password-file /home/lomot/.restic_passwd
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enter password for repository:
+</span></span><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>ID        Time                 Host           Tags        Paths
+</span></span><span class=line><span class=cl>------------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl>bef1d9e5  2022-01-15 11:52:13  lomot-service              /home/lomot/important-data
+</span></span><span class=line><span class=cl>------------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl>1 snapshots
+</span></span></code></pre></td></tr></table></div></div><h2 id=免密码备份>免密码备份</h2><ul><li>创建密码文件</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;123456&#39;</span> &gt; /home/lomot/.restic_passwd
+</span></span></code></pre></td></tr></table></div></div><p>备份</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test backup important-data/ --password-file /home/lomot/.restic_passwd
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
@@ -471,35 +262,17 @@ bef1d9e5  2022-01-15 11:52:13  lomot-service              /home/lomot/important-
 </span><span class=lnt>6
 </span><span class=lnt>7
 </span><span class=lnt>8
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>repository b4e2dff5 opened successfully, password is correct
-
-Files:           1 new,     0 changed,     2 unmodified
-Dirs:            0 new,     0 changed,     0 unmodified
-Added to the repo: 419 B
-
-processed 3 files, 137 B in 0:00
-snapshot a8cfbbf2 saved
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=删除策略>删除策略</h2>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restic -r rest:http://192.168.8.250:8022/test forget --keep-monthly <span class=m>6</span> --keep-weekly <span class=m>4</span> --keep-daily <span class=m>7</span> --keep-last <span class=m>3</span> --prune
-</code></pre></td></tr></table>
-</div>
-</div><p>保留 6 个月最新备份, 4 个周最新备份, 7 个日最新备份, 至少 3 个历史</p>
-<h2 id=定时备份-gitea-的脚本>定时备份 gitea 的脚本</h2>
-<ul>
-<li>备份脚本</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>repository b4e2dff5 opened successfully, password is correct
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Files:           1 new,     0 changed,     2 unmodified
+</span></span><span class=line><span class=cl>Dirs:            0 new,     0 changed,     0 unmodified
+</span></span><span class=line><span class=cl>Added to the repo: 419 B
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>processed 3 files, 137 B in 0:00
+</span></span><span class=line><span class=cl>snapshot a8cfbbf2 saved
+</span></span></code></pre></td></tr></table></div></div><h2 id=删除策略>删除策略</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>restic -r rest:http://192.168.8.250:8022/test forget --keep-monthly <span class=m>6</span> --keep-weekly <span class=m>4</span> --keep-daily <span class=m>7</span> --keep-last <span class=m>3</span> --prune
+</span></span></code></pre></td></tr></table></div></div><p>保留 6 个月最新备份, 4 个周最新备份, 7 个日最新备份, 至少 3 个历史</p><h2 id=定时备份-gitea-的脚本>定时备份 gitea 的脚本</h2><ul><li>备份脚本</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -527,94 +300,38 @@ snapshot a8cfbbf2 saved
 </span><span class=lnt>26
 </span><span class=lnt>27
 </span><span class=lnt>28
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=cp>#!/bin/bash
-</span><span class=cp></span>
-<span class=nv>BACKUP_LOG_FILE</span><span class=o>=</span><span class=si>${</span><span class=nv>LOG_FILE</span><span class=k>:-</span><span class=p>/var/log/remote-backup.log</span><span class=si>}</span>
-<span class=nv>RESTIC_REPO</span><span class=o>=</span><span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=k>:-</span><span class=s2>&#34;rest:http://192.168.8.250:8022/gitea&#34;</span><span class=si>}</span>
-<span class=nv>PASSWORD_FILE</span><span class=o>=</span><span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=k>:-</span><span class=s2>&#34;/root/.restic_passwd&#34;</span><span class=si>}</span>
-
-<span class=k>function</span> remoteBackup<span class=o>()</span> <span class=o>{</span>
-  <span class=c1># local backupDate=$(date &#34;+%Y%m%d-%H-%M-%S&#34;)</span>
-  <span class=nb>local</span> <span class=nv>backupName</span><span class=o>=</span><span class=nv>$1</span>
-  <span class=nb>local</span> <span class=nv>srcDir</span><span class=o>=</span><span class=nv>$2</span>
-  <span class=nb>local</span> <span class=nv>restic_repo</span><span class=o>=</span><span class=nv>$3</span>
-
-  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start backup] </span><span class=si>${</span><span class=nv>backupName</span><span class=si>}</span><span class=s2>&#34;</span>
-  restic -r <span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span> backup <span class=si>${</span><span class=nv>srcDir</span><span class=si>}</span> --password-file <span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=si>}</span>
-  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [finish backup] </span><span class=si>${</span><span class=nv>backupName</span><span class=si>}</span><span class=s2>&#34;</span>
-<span class=o>}</span>
-
-<span class=k>function</span> cleanUp<span class=o>()</span> <span class=o>{</span>
-  <span class=nb>local</span> <span class=nv>restic_repo</span><span class=o>=</span><span class=nv>$1</span>
-  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start cleanUp] </span><span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span><span class=s2>&#34;</span>
-  restic -r <span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span> forget --keep-monthly <span class=m>6</span> --keep-weekly <span class=m>4</span> --keep-daily <span class=m>7</span> --keep-last <span class=m>3</span> --prune --password-file <span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=si>}</span>
-  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start cleanUp] </span><span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span><span class=s2>&#34;</span>
-<span class=o>}</span>
-
-remoteBackup <span class=s2>&#34;gitea&#34;</span> /opt/gitea/ <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
-remoteBackup <span class=s2>&#34;git-home&#34;</span> /home/git/ <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
-<span class=c1># clean up</span>
-cleanUp <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
-</code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>crontab 定时任务</li>
-</ul>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>crontab -e
-</code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=m>0</span> <span class=m>2</span> * * * /opt/gitea/backup.sh
-</code></pre></td></tr></table>
-</div>
-</div></div><div class=post-footer id=post-footer>
-<div class=post-info>
-<div class=post-info-line>
-<div class=post-info-mod>
-<span>更新于 2022-02-03&nbsp;<a class=git-hash href=https://github.com/dillonzq/LoveIt/commit/d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5 target=_blank title="commit by lomot(lomot@qq.com) d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5: use slug; rename all post url">
-<i class="fas fa-hashtag fa-fw"></i>d1bbeae</a></span>
-</div>
-<div class=post-info-license></div>
-</div>
-<div class=post-info-line>
-<div class=post-info-md></div>
-<div class=post-info-share>
-<span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据" data-via=lomotco data-hashtags=Restic,运维><i class="fab fa-twitter fa-fw"></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-hashtag=Restic><i class="fab fa-facebook-square fa-fw"></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据" data-ralateuid=5676214854><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 人人" data-sharer=renren data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/><i class="fab fa-renren fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据"><i class="fab fa-evernote fa-fw"></i></a></span>
-</div>
-</div>
-</div>
-<div class=post-info-more>
-<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/restic/>Restic</a>,&nbsp;<a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></section>
-<section>
-<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
-</section>
-</div>
-<div class=post-nav><a href=/2021/11/deploy-drone-ci-gitea/ class=prev rel=prev title="让 Gitea 支持 Drone 持续集成工具"><i class="fas fa-angle-left fa-fw"></i>让 Gitea 支持 Drone 持续集成工具</a></div>
-</div>
-<div id=comments><div id=valine class=comment></div><noscript>
-Please enable JavaScript to view the comments powered by <a href=https://valine.js.org/>Valine</a>.
-</noscript></div></article></div>
-</main><footer class=footer>
-<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.92.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2016 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>lomot</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
-<span class=icp><a href=http://beian.miit.gov.cn target=_blank class=text rel=nofollow>皖ICP备20012790号-1</a></span></div>
-</div>
-</footer></div>
-<div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
-<i class="fas fa-arrow-up fa-fw"></i>
-</a><a href=# id=view-comments class=fixed-button title=查看评论>
-<i class="fas fa-comment fa-fw"></i>
-</a>
-</div><link rel=stylesheet href=/lib/valine/valine.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lightgallery.js@1.2.0/dist/css/lightgallery.min.css><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/valine@1.4.14/dist/Valine.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/smooth-scroll@16.1.3/dist/smooth-scroll.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lazysizes@5.2.2/lazysizes.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lightgallery.js@1.2.0/dist/js/lightgallery.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lg-zoom.js@1.2.0/dist/lg-zoom.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/clipboard@2.0.6/dist/clipboard.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/sharer.js@0.4.0/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:1e3},comment:{valine:{appId:"I7PtpjsuKSpR2qhMaq7JJXQt-MdYXbMMI",appKey:"B9kjrXLA5NJLrUT0PhLfPb2n",avatar:"mp",el:"#valine",emojiCDN:"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/",emojiMaps:{100:"1f4af.png",alien:"1f47d.png",anger:"1f4a2.png",angry:"1f620.png",anguished:"1f627.png",astonished:"1f632.png",black_heart:"1f5a4.png",blue_heart:"1f499.png",blush:"1f60a.png",bomb:"1f4a3.png",boom:"1f4a5.png",broken_heart:"1f494.png",brown_heart:"1f90e.png",clown_face:"1f921.png",cold_face:"1f976.png",cold_sweat:"1f630.png",confounded:"1f616.png",confused:"1f615.png",cry:"1f622.png",crying_cat_face:"1f63f.png",cupid:"1f498.png",dash:"1f4a8.png",disappointed:"1f61e.png",disappointed_relieved:"1f625.png",dizzy:"1f4ab.png",dizzy_face:"1f635.png",drooling_face:"1f924.png",exploding_head:"1f92f.png",expressionless:"1f611.png",face_vomiting:"1f92e.png",face_with_cowboy_hat:"1f920.png",face_with_hand_over_mouth:"1f92d.png",face_with_head_bandage:"1f915.png",face_with_monocle:"1f9d0.png",face_with_raised_eyebrow:"1f928.png",face_with_rolling_eyes:"1f644.png",face_with_symbols_on_mouth:"1f92c.png",face_with_thermometer:"1f912.png",fearful:"1f628.png",flushed:"1f633.png",frowning:"1f626.png",ghost:"1f47b.png",gift_heart:"1f49d.png",green_heart:"1f49a.png",grimacing:"1f62c.png",grin:"1f601.png",grinning:"1f600.png",hankey:"1f4a9.png",hear_no_evil:"1f649.png",heart:"2764-fe0f.png",heart_decoration:"1f49f.png",heart_eyes:"1f60d.png",heart_eyes_cat:"1f63b.png",heartbeat:"1f493.png",heartpulse:"1f497.png",heavy_heart_exclamation_mark_ornament:"2763-fe0f.png",hole:"1f573-fe0f.png",hot_face:"1f975.png",hugging_face:"1f917.png",hushed:"1f62f.png",imp:"1f47f.png",innocent:"1f607.png",japanese_goblin:"1f47a.png",japanese_ogre:"1f479.png",joy:"1f602.png",joy_cat:"1f639.png",kiss:"1f48b.png",kissing:"1f617.png",kissing_cat:"1f63d.png",kissing_closed_eyes:"1f61a.png",kissing_heart:"1f618.png",kissing_smiling_eyes:"1f619.png",laughing:"1f606.png",left_speech_bubble:"1f5e8-fe0f.png",love_letter:"1f48c.png",lying_face:"1f925.png",mask:"1f637.png",money_mouth_face:"1f911.png",nauseated_face:"1f922.png",nerd_face:"1f913.png",neutral_face:"1f610.png",no_mouth:"1f636.png",open_mouth:"1f62e.png",orange_heart:"1f9e1.png",partying_face:"1f973.png",pensive:"1f614.png",persevere:"1f623.png",pleading_face:"1f97a.png",pouting_cat:"1f63e.png",purple_heart:"1f49c.png",rage:"1f621.png",relaxed:"263a-fe0f.png",relieved:"1f60c.png",revolving_hearts:"1f49e.png",right_anger_bubble:"1f5ef-fe0f.png",robot_face:"1f916.png",rolling_on_the_floor_laughing:"1f923.png",scream:"1f631.png",scream_cat:"1f640.png",see_no_evil:"1f648.png",shushing_face:"1f92b.png",skull:"1f480.png",skull_and_crossbones:"2620-fe0f.png",sleeping:"1f634.png",sleepy:"1f62a.png",slightly_frowning_face:"1f641.png",slightly_smiling_face:"1f642.png",smile:"1f604.png",smile_cat:"1f638.png",smiley:"1f603.png",smiley_cat:"1f63a.png",smiling_face_with_3_hearts:"1f970.png",smiling_imp:"1f608.png",smirk:"1f60f.png",smirk_cat:"1f63c.png",sneezing_face:"1f927.png",sob:"1f62d.png",space_invader:"1f47e.png",sparkling_heart:"1f496.png",speak_no_evil:"1f64a.png",speech_balloon:"1f4ac.png","star-struck":"1f929.png",stuck_out_tongue:"1f61b.png",stuck_out_tongue_closed_eyes:"1f61d.png",stuck_out_tongue_winking_eye:"1f61c.png",sunglasses:"1f60e.png",sweat:"1f613.png",sweat_drops:"1f4a6.png",sweat_smile:"1f605.png",thinking_face:"1f914.png",thought_balloon:"1f4ad.png",tired_face:"1f62b.png",triumph:"1f624.png",two_hearts:"1f495.png",unamused:"1f612.png",upside_down_face:"1f643.png",weary:"1f629.png",white_frowning_face:"2639-fe0f.png",white_heart:"1f90d.png",wink:"1f609.png",woozy_face:"1f974.png",worried:"1f61f.png",yawning_face:"1f971.png",yellow_heart:"1f49b.png",yum:"1f60b.png",zany_face:"1f92a.png",zipper_mouth_face:"1f910.png",zzz:"1f4a4.png"},enableQQ:!1,highlight:!0,lang:"zh-cn",pageSize:10,placeholder:"来写评论吧 ...",recordIP:!0,visitor:!0}},lightGallery:{actualSize:!1,exThumbImage:"data-thumbnail",hideBarsDelay:2e3,selector:".lightgallery",speed:400,thumbContHeight:80,thumbWidth:80,thumbnail:!0}}</script><script type=text/javascript src=/js/theme.min.js></script></body>
-</html>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=nv>BACKUP_LOG_FILE</span><span class=o>=</span><span class=si>${</span><span class=nv>LOG_FILE</span><span class=k>:-</span><span class=p>/var/log/remote-backup.log</span><span class=si>}</span>
+</span></span><span class=line><span class=cl><span class=nv>RESTIC_REPO</span><span class=o>=</span><span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=k>:-</span><span class=s2>&#34;rest:http://192.168.8.250:8022/gitea&#34;</span><span class=si>}</span>
+</span></span><span class=line><span class=cl><span class=nv>PASSWORD_FILE</span><span class=o>=</span><span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=k>:-</span><span class=s2>&#34;/root/.restic_passwd&#34;</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> remoteBackup<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1># local backupDate=$(date &#34;+%Y%m%d-%H-%M-%S&#34;)</span>
+</span></span><span class=line><span class=cl>  <span class=nb>local</span> <span class=nv>backupName</span><span class=o>=</span><span class=nv>$1</span>
+</span></span><span class=line><span class=cl>  <span class=nb>local</span> <span class=nv>srcDir</span><span class=o>=</span><span class=nv>$2</span>
+</span></span><span class=line><span class=cl>  <span class=nb>local</span> <span class=nv>restic_repo</span><span class=o>=</span><span class=nv>$3</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start backup] </span><span class=si>${</span><span class=nv>backupName</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>  restic -r <span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span> backup <span class=si>${</span><span class=nv>srcDir</span><span class=si>}</span> --password-file <span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [finish backup] </span><span class=si>${</span><span class=nv>backupName</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> cleanUp<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=nb>local</span> <span class=nv>restic_repo</span><span class=o>=</span><span class=nv>$1</span>
+</span></span><span class=line><span class=cl>  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start cleanUp] </span><span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>  restic -r <span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span> forget --keep-monthly <span class=m>6</span> --keep-weekly <span class=m>4</span> --keep-daily <span class=m>7</span> --keep-last <span class=m>3</span> --prune --password-file <span class=si>${</span><span class=nv>PASSWORD_FILE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>  <span class=nb>echo</span> <span class=s2>&#34;[</span><span class=k>$(</span>date<span class=k>)</span><span class=s2>] [start cleanUp] </span><span class=si>${</span><span class=nv>restic_repo</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>remoteBackup <span class=s2>&#34;gitea&#34;</span> /opt/gitea/ <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>remoteBackup <span class=s2>&#34;git-home&#34;</span> /home/git/ <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl><span class=c1># clean up</span>
+</span></span><span class=line><span class=cl>cleanUp <span class=si>${</span><span class=nv>RESTIC_REPO</span><span class=si>}</span> <span class=p>&amp;</span>&gt;&gt;<span class=si>${</span><span class=nv>BACKUP_LOG_FILE</span><span class=si>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>crontab 定时任务</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>crontab -e
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=m>0</span> <span class=m>2</span> * * * /opt/gitea/backup.sh
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-02-03&nbsp;<a class=git-hash href=https://github.com/dillonzq/LoveIt/commit/d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5 target=_blank title="commit by lomot(lomot@qq.com) d1bbeae9ad1bf80a5f825db76ebcff17c0d222e5: use slug; rename all post url">
+<i class="fas fa-hashtag fa-fw"></i>d1bbeae</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据" data-via=lomotco data-hashtags=Restic,运维><i class="fab fa-twitter fa-fw"></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-hashtag=Restic><i class="fab fa-facebook-square fa-fw"></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据" data-ralateuid=5676214854><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 人人" data-sharer=renren data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/><i class="fab fa-renren fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://blog.lomot.cn/2022/01/use-restic-to-backup/ data-title="使用 Restic 备份服务器数据"><i class="fab fa-evernote fa-fw"></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/restic/>Restic</a>,&nbsp;<a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/2021/11/deploy-drone-ci-gitea/ class=prev rel=prev title="让 Gitea 支持 Drone 持续集成工具"><i class="fas fa-angle-left fa-fw"></i>让 Gitea 支持 Drone 持续集成工具</a></div></div><div id=comments><div id=valine class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://valine.js.org/>Valine</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.99.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2016 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>lomot</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp><a href=http://beian.miit.gov.cn target=_blank class=text rel=nofollow>皖ICP备20012790号-1</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><link rel=stylesheet href=/lib/valine/valine.min.css><link rel=stylesheet href=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lightgallery.js@1.2.0/dist/css/lightgallery.min.css><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/valine@1.4.14/dist/Valine.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/smooth-scroll@16.1.3/dist/smooth-scroll.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lazysizes@5.2.2/lazysizes.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lightgallery.js@1.2.0/dist/js/lightgallery.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/lg-zoom.js@1.2.0/dist/lg-zoom.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/clipboard@2.0.6/dist/clipboard.min.js></script><script type=text/javascript src=https://static-1251996892.cos.ap-chengdu.myqcloud.com/LoveItLib_0.2.10/sharer.js@0.4.0/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:1e3},comment:{valine:{appId:"I7PtpjsuKSpR2qhMaq7JJXQt-MdYXbMMI",appKey:"B9kjrXLA5NJLrUT0PhLfPb2n",avatar:"mp",el:"#valine",emojiCDN:"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/",emojiMaps:{100:"1f4af.png",alien:"1f47d.png",anger:"1f4a2.png",angry:"1f620.png",anguished:"1f627.png",astonished:"1f632.png",black_heart:"1f5a4.png",blue_heart:"1f499.png",blush:"1f60a.png",bomb:"1f4a3.png",boom:"1f4a5.png",broken_heart:"1f494.png",brown_heart:"1f90e.png",clown_face:"1f921.png",cold_face:"1f976.png",cold_sweat:"1f630.png",confounded:"1f616.png",confused:"1f615.png",cry:"1f622.png",crying_cat_face:"1f63f.png",cupid:"1f498.png",dash:"1f4a8.png",disappointed:"1f61e.png",disappointed_relieved:"1f625.png",dizzy:"1f4ab.png",dizzy_face:"1f635.png",drooling_face:"1f924.png",exploding_head:"1f92f.png",expressionless:"1f611.png",face_vomiting:"1f92e.png",face_with_cowboy_hat:"1f920.png",face_with_hand_over_mouth:"1f92d.png",face_with_head_bandage:"1f915.png",face_with_monocle:"1f9d0.png",face_with_raised_eyebrow:"1f928.png",face_with_rolling_eyes:"1f644.png",face_with_symbols_on_mouth:"1f92c.png",face_with_thermometer:"1f912.png",fearful:"1f628.png",flushed:"1f633.png",frowning:"1f626.png",ghost:"1f47b.png",gift_heart:"1f49d.png",green_heart:"1f49a.png",grimacing:"1f62c.png",grin:"1f601.png",grinning:"1f600.png",hankey:"1f4a9.png",hear_no_evil:"1f649.png",heart:"2764-fe0f.png",heart_decoration:"1f49f.png",heart_eyes:"1f60d.png",heart_eyes_cat:"1f63b.png",heartbeat:"1f493.png",heartpulse:"1f497.png",heavy_heart_exclamation_mark_ornament:"2763-fe0f.png",hole:"1f573-fe0f.png",hot_face:"1f975.png",hugging_face:"1f917.png",hushed:"1f62f.png",imp:"1f47f.png",innocent:"1f607.png",japanese_goblin:"1f47a.png",japanese_ogre:"1f479.png",joy:"1f602.png",joy_cat:"1f639.png",kiss:"1f48b.png",kissing:"1f617.png",kissing_cat:"1f63d.png",kissing_closed_eyes:"1f61a.png",kissing_heart:"1f618.png",kissing_smiling_eyes:"1f619.png",laughing:"1f606.png",left_speech_bubble:"1f5e8-fe0f.png",love_letter:"1f48c.png",lying_face:"1f925.png",mask:"1f637.png",money_mouth_face:"1f911.png",nauseated_face:"1f922.png",nerd_face:"1f913.png",neutral_face:"1f610.png",no_mouth:"1f636.png",open_mouth:"1f62e.png",orange_heart:"1f9e1.png",partying_face:"1f973.png",pensive:"1f614.png",persevere:"1f623.png",pleading_face:"1f97a.png",pouting_cat:"1f63e.png",purple_heart:"1f49c.png",rage:"1f621.png",relaxed:"263a-fe0f.png",relieved:"1f60c.png",revolving_hearts:"1f49e.png",right_anger_bubble:"1f5ef-fe0f.png",robot_face:"1f916.png",rolling_on_the_floor_laughing:"1f923.png",scream:"1f631.png",scream_cat:"1f640.png",see_no_evil:"1f648.png",shushing_face:"1f92b.png",skull:"1f480.png",skull_and_crossbones:"2620-fe0f.png",sleeping:"1f634.png",sleepy:"1f62a.png",slightly_frowning_face:"1f641.png",slightly_smiling_face:"1f642.png",smile:"1f604.png",smile_cat:"1f638.png",smiley:"1f603.png",smiley_cat:"1f63a.png",smiling_face_with_3_hearts:"1f970.png",smiling_imp:"1f608.png",smirk:"1f60f.png",smirk_cat:"1f63c.png",sneezing_face:"1f927.png",sob:"1f62d.png",space_invader:"1f47e.png",sparkling_heart:"1f496.png",speak_no_evil:"1f64a.png",speech_balloon:"1f4ac.png","star-struck":"1f929.png",stuck_out_tongue:"1f61b.png",stuck_out_tongue_closed_eyes:"1f61d.png",stuck_out_tongue_winking_eye:"1f61c.png",sunglasses:"1f60e.png",sweat:"1f613.png",sweat_drops:"1f4a6.png",sweat_smile:"1f605.png",thinking_face:"1f914.png",thought_balloon:"1f4ad.png",tired_face:"1f62b.png",triumph:"1f624.png",two_hearts:"1f495.png",unamused:"1f612.png",upside_down_face:"1f643.png",weary:"1f629.png",white_frowning_face:"2639-fe0f.png",white_heart:"1f90d.png",wink:"1f609.png",woozy_face:"1f974.png",worried:"1f61f.png",yawning_face:"1f971.png",yellow_heart:"1f49b.png",yum:"1f60b.png",zany_face:"1f92a.png",zipper_mouth_face:"1f910.png",zzz:"1f4a4.png"},enableQQ:!1,highlight:!0,lang:"zh-cn",pageSize:10,placeholder:"来写评论吧 ...",recordIP:!0,visitor:!0}},lightGallery:{actualSize:!1,exThumbImage:"data-thumbnail",hideBarsDelay:2e3,selector:".lightgallery",speed:400,thumbContHeight:80,thumbWidth:80,thumbnail:!0}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
